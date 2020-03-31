@@ -1,73 +1,106 @@
-const menu = {
-  _courses: {
-    appetizers: [],
-    mains: [],
-    desserts: [],
-    },
-    get appetizers() { 
-      return this._courses.appetizers;
-    },
-    set appetizers(appetizers) { 
-      this._courses.appetizers = appetizers;
-    },
-    get mains() {
-      return this._courses.mains;
-    },
-    set mains(mains) {
-      this._courses.mains = mains;
-    },
-    get desserts() { 
-      return this._courses.desserts;
-    },
-    set desserts(desserts) {
-      this._courses.desserts = desserts;
-    },
-  get courses() {
-    return {
-      appetizers: this.appetizers,
-      mains: this.mains,
-      desserts: this.desserts
-    } 
-    },
-  addDishToCourse(courseName, dishName, dishPrice) {
-    const dish = {
-      name: dishName,
-      price: dishPrice,
+// All valid credit card numbers
+const valid1 = [4, 5, 3, 9, 6, 7, 7, 9, 0, 8, 0, 1, 6, 8, 0, 8];
+const valid2 = [5, 5, 3, 5, 7, 6, 6, 7, 6, 8, 7, 5, 1, 4, 3, 9];
+const valid3 = [3, 7, 1, 6, 1, 2, 0, 1, 9, 9, 8, 5, 2, 3, 6];
+const valid4 = [6, 0, 1, 1, 1, 4, 4, 3, 4, 0, 6, 8, 2, 9, 0, 5];
+const valid5 = [4, 5, 3, 9, 4, 0, 4, 9, 6, 7, 8, 6, 9, 6, 6, 6];
+
+// All invalid credit card numbers
+const invalid1 = [4, 5, 3, 2, 7, 7, 8, 7, 7, 1, 0, 9, 1, 7, 9, 5];
+const invalid2 = [5, 7, 9, 5, 5, 9, 3, 3, 9, 2, 1, 3, 4, 6, 4, 3];
+const invalid3 = [3, 7, 5, 7, 9, 6, 0, 8, 4, 4, 5, 9, 9, 1, 4];
+const invalid4 = [6, 0, 1, 1, 1, 2, 7, 9, 6, 1, 7, 7, 7, 9, 3, 5];
+const invalid5 = [5, 3, 8, 2, 0, 1, 9, 7, 7, 2, 8, 8, 3, 8, 5, 4];
+
+// Can be either valid or invalid
+const mystery1 = [3, 4, 4, 8, 0, 1, 9, 6, 8, 3, 0, 5, 4, 1, 4];
+const mystery2 = [5, 4, 6, 6, 1, 0, 0, 8, 6, 1, 6, 2, 0, 2, 3, 9];
+const mystery3 = [6, 0, 1, 1, 3, 7, 7, 0, 2, 0, 9, 6, 2, 6, 5, 6, 2, 0, 3];
+const mystery4 = [4, 9, 2, 9, 8, 7, 7, 1, 6, 9, 2, 1, 7, 0, 9, 3];
+const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3];
+
+// An array of all the arrays above
+const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5];
+
+
+// Add your functions below:
+
+// Applying Luhn algorithm to check if card is valid or not;
+const validateCred = arr => {
+  for(let i = arr.length - 1; i >= 0; i--) {
+    if(arr.length % 2 !== 0 && i % 2 !== 0) {
+      arr[i] *= 2;
+    } else if(arr.length % 2 === 0 && i % 2 === 0) {
+      arr[i] *= 2;
     };
-    this._courses[courseName].push(dish);
-    /* if(courseName === 'appetizers') {
-      this._course.appetizers.push(dish);
-    } else if(courseName === 'mains') {
-      this._courses.mains.push(dish);
-    } else if(courseName === 'desserts') {
-      this._courses.desserts.push(dish);
-    }; */
-  },
-  getRandomDishFromCourse(courseName) {
-    const dishes = this._courses[courseName];
-    const randomIndex = Math.floor(Math.random() * dishes.length);
-    return dishes[randomIndex];
-  },
-  generateRandomMeal: function() {
-    const appetizer = this.getRandomDishFromCourse('appetizers');
-    const main = this.getRandomDishFromCourse('mains');
-    const dessert = this.getRandomDishFromCourse('desserts');
-    const totalPrice = appetizer.price + main.price + dessert.price;
-    return `Your meal is ${appetizer.name}, ${main.name}, ${dessert.name}. The total price is ${totalPrice}$.`;
-  }
+   if(arr[i] > 9) {
+      arr[i] -= 9;
+    };
+  };
+  const arrSum = arr => {
+    return arr.reduce((a, b) => a + b, 0);
+  };
+
+  if(arrSum(arr) % 10 === 0) {
+    return true;
+  } else {
+    return false;
+  };
 };
 
-menu.addDishToCourse('appetizers', 'Breadsticks', 4);
-menu.addDishToCourse('appetizers', 'Prosciutto', 5.5);
-menu.addDishToCourse('appetizers', 'Fries', 3.5);
+// Function 2 - Find Invalid Card Numbers from batch array -
 
-menu.addDishToCourse('mains', 'Parmigiana', 8);
-menu.addDishToCourse('mains', 'Carbonara', 7.5);
-menu.addDishToCourse('mains', 'Pizza', 10);
+const findInvalidCards = arr => {
+  const invalidCards = [];
+  for(let i = 0; i < arr.length; i++) {
+    if(!validateCred(arr[i])) {
+      invalidCards.push(arr[i]);
+    };
+  };
+  return invalidCards;
+};
+//console.log(invalid1);
+//console.log(findInvalidCards(batch));
 
-menu.addDishToCourse('desserts', 'Tiramisu', 4);
-menu.addDishToCourse('desserts', 'Panna Cotta', 4);
-menu.addDishToCourse('desserts', 'Apple Pie', 4);
+const invalidBatch = findInvalidCards(batch);
 
-const meal = menu.generateRandomMeal();
-console.log(meal);
+// Function 3 - Checking Card Company Name -
+
+// 1. Adjusting modified initial arrays to return correct first digit.
+const idInvalidCardCompanies = arr => {
+  const companies = [];
+  const readyToCheck = [];
+  for(let i = 0; i < arr.length; i++) {
+    if(arr[i].length % 2 === 0 && arr[i][0] % 2 === 0) {
+    arr[i][0] /= 2;
+    readyToCheck.push(arr[i]);
+  } else if(arr[i].length % 2 === 0 && arr[i][0] % 2 !== 0) {
+    arr[i][0] += 9;
+    arr[i][0] /= 2;
+    readyToCheck.push(arr[i]);
+  } else if(arr[i].length % 2 !== 0) {
+    readyToCheck.push(arr[i]);
+  };
+  };
+
+  // 2. Assigning company name to invalid card number;
+  for (let i = 0; i < readyToCheck.length; i++) {
+        if(readyToCheck[i][0] === 3) {
+          companies.push('Amex');
+        } else if(readyToCheck[i][0] === 4) {
+          companies.push('Visa');
+        } else if(readyToCheck[i][0] === 5) {
+          companies.push('Mastercard');
+        } else if(readyToCheck[i][0] === 6) {
+          companies.push('Discover');
+        } else {
+          console.log('Company Not Found');
+        };
+  };
+
+  // 3. Returning array with unique values only.
+  const companiesToContact = new Set(companies);
+  const companiesArr = [...companiesToContact];
+  return companiesArr;
+};
+console.log(idInvalidCardCompanies(invalidBatch));
